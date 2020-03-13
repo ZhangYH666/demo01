@@ -52,6 +52,18 @@
         android:text="显示密码"
         tools:ignore="HardcodedText" />
 
+    <CheckBox
+        android:id="@+id/cbx_save"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/ed_Pwd"
+        android:layout_alignEnd="@id/ed_Pwd"
+        android:layout_centerVertical="true"
+        android:layout_marginTop="10dp"
+        android:text="记住密码"
+        tools:ignore="HardcodedText" />
+
+
     <!--        ID是不是一样-->
     <Button
 

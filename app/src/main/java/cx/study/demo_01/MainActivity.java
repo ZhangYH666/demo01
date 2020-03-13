@@ -1,6 +1,9 @@
 package cx.study.demo_01;
 
+import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
@@ -27,6 +30,10 @@ public class MainActivity extends AppCompatActivity {
     private EditText ed_name;
     private EditText ed_pwd;
     private CheckBox cbx_show;
+    private CheckBox cbx_save;
+
+    private SharedPreferences pref;
+    private SharedPreferences.Editor editor;
 
     //这个是onCreate事件 Activity初始化的时候会运行这个
     @Override
@@ -92,6 +99,21 @@ public class MainActivity extends AppCompatActivity {
                 CancelFocus();
             }
         });
+        cbx_save.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    editor.putBoolean("isSave", true);
+                    editor.putString("name", ed_name.getText().toString());
+                    editor.putString("pwd", ed_pwd.getText().toString());
+                    editor.commit();
+                } else {
+                    editor.clear();
+                    editor.putBoolean("isSave", false);
+                    editor.commit();
+                }
+            }
+        });
 
     }
 
@@ -102,11 +124,26 @@ public class MainActivity extends AppCompatActivity {
      * findViewByID 翻译一下通过寻找ID找控件
      * 这样就和界面连接起来了
      */
+    @SuppressLint("CommitPrefEdits")
     private void initView() {
         btn_send = findViewById(R.id.btn_send);
         ed_name = findViewById(R.id.ed_Name);
         ed_pwd = findViewById(R.id.ed_Pwd);
         cbx_show = findViewById(R.id.cbx_show);
+        cbx_save = findViewById(R.id.cbx_save);
+        //创建一个对象
+        pref = getSharedPreferences("data", Context.MODE_PRIVATE);
+        //实例化
+        editor = pref.edit();
+        //读取数据
+        boolean isSave = pref.getBoolean("isSave", false);
+        if (isSave) {
+            cbx_save.setChecked(true);
+            ed_name.setText(pref.getString("name", null));
+            ed_pwd.setText(pref.getString("pwd", null));
+        }
+
+
     }
 
     //这个是吐司。中文叫法就这样  固定写法 data就是需要显示的文字  这个选项就是显示时间的长短
