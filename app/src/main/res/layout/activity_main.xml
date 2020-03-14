@@ -11,15 +11,27 @@
     android:focusableInTouchMode="true"
 
     tools:context=".MainActivity">
+
     <!--  取消焦点  -->
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/img_tx"
+        android:layout_width="130dp"
+        android:layout_height="130dp"
+        android:layout_centerHorizontal="true"
+        android:layout_gravity="center"
+        android:layout_marginTop="66dp"
+        android:src="@drawable/beijing02" />
+
 
     <EditText
         android:id="@+id/ed_Name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/img_tx"
         android:layout_centerHorizontal="true"
         android:layout_marginLeft="50dp"
-        android:layout_marginTop="200dp"
+        android:layout_marginTop="50dp"
         android:layout_marginRight="50dp"
         android:hint="请输入用户名"
         android:importantForAutofill="no"
@@ -37,7 +49,6 @@
         android:layout_marginRight="50dp"
         android:hint="请输入密码"
         android:importantForAutofill="no"
-
         android:inputType="textPassword"
         android:textSize="20sp"
         tools:ignore="HardcodedText,TextFields" />
@@ -65,16 +76,32 @@
 
 
     <!--        ID是不是一样-->
-    <Button
-
-        android:id="@+id/btn_send"
-        android:layout_width="200dp"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/cbx_show"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp"
-        android:text="登录"
-        android:textSize="16sp"
-        tools:ignore="HardcodedText" />
+        android:layout_marginLeft="50dp"
+        android:layout_marginTop="40dp"
+        android:layout_marginRight="50dp">
+
+        <Button
+            android:id="@+id/btn_send"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="登录"
+            android:textSize="16sp"
+            tools:ignore="HardcodedText" />
+
+        <Button
+            android:id="@+id/btn_registered"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="注册"
+            android:textSize="16sp"
+            tools:ignore="HardcodedText" />
+    </LinearLayout>
+
 
 </RelativeLayout>

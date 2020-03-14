@@ -34,4 +34,11 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+
+    //圆形图片
+    implementation 'de.hdodenhof:circleimageview:3.1.0'
+    //MaterialEditText
+    implementation 'com.rengwuxian.materialedittext:library:2.1.4'
+    //剪切图片
+    implementation 'com.github.yalantis:ucrop:2.2.3'
 }
