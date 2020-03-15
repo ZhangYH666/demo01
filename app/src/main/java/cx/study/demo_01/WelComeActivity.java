@@ -41,6 +41,7 @@ public class WelComeActivity extends AppCompatActivity {
     private TextView tv_show_show;
     private TextView tv_show_pwd;
     private TextView tv_show_pwd2;
+    private TextView tv_log_tx;
     private EditText ed_Name;
     private EditText ed_pwd;
     private EditText ed_pwd2;
@@ -52,6 +53,7 @@ public class WelComeActivity extends AppCompatActivity {
     private LinearLayout linear;
     private SharedPreferences pref;
     private SharedPreferences.Editor editor;
+    private String createOrUpdata;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,6 +79,7 @@ public class WelComeActivity extends AppCompatActivity {
         img_pic = findViewById(R.id.img_tx);
         tv_show_show = findViewById(R.id.tv_show_name);
         tv_show_pwd = findViewById(R.id.tv_show_pwd);
+        tv_log_tx = findViewById(R.id.tv_log_tx);
         tv_show_pwd2 = findViewById(R.id.tv_show_pwd2);
         ed_Name = findViewById(R.id.ed_Name_change);
         ed_pwd = findViewById(R.id.ed_Pwd);
@@ -94,7 +97,30 @@ public class WelComeActivity extends AppCompatActivity {
         changeImage();
     }
 
+    public void setShowName(String name, String pwd1, String pwd2) {
+        tv_show_show.setText(name);
+        ed_Name.setHint(name);
+        tv_show_pwd.setText(pwd1);
+        ed_pwd.setHint(pwd1);
+        tv_show_pwd2.setText(pwd2);
+        ed_pwd2.setHint(pwd2);
+    }
+
     private void initEvent() {
+
+        Intent intent = getIntent();
+        createOrUpdata = intent.getStringExtra("data");
+        if (createOrUpdata.equals("创建")) {
+            rg.setVisibility(View.INVISIBLE);
+            setShowName("请输入用户名", "输入密码", "确认密码");
+
+        } else if (createOrUpdata.equals("更改")) {
+            rg.setVisibility(View.VISIBLE);
+            setShowName("请输入用户名", "输入旧密码", "输入新密码");
+
+        }
+
+
         img_pic.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -113,18 +139,14 @@ public class WelComeActivity extends AppCompatActivity {
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 switch (checkedId) {
                     case R.id.rb_name:
-                        rgChange(true);
-                        ed_pwd.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
-                        ed_Name.setText("");
-                        ed_pwd.setText("");
-                        ed_pwd2.setText("");
+                        //不修改头像
+                        tv_log_tx.setVisibility(View.INVISIBLE);
+                        img_pic.setVisibility(View.INVISIBLE);
                         break;
                     case R.id.rb_pwd:
-                        rgChange(false);
-                        ed_pwd.setTransformationMethod(PasswordTransformationMethod.getInstance());
-                        ed_Name.setText("");
-                        ed_pwd.setText("");
-                        ed_pwd2.setText("");
+                        //修改头像
+                        tv_log_tx.setVisibility(View.VISIBLE);
+                        img_pic.setVisibility(View.VISIBLE);
                         break;
                     default:
                         break;
@@ -135,27 +157,28 @@ public class WelComeActivity extends AppCompatActivity {
         btn_ok.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (isNull()) {
-                    TS("不能为空");
-                } else {
-                    String name = pref.getString("name", null);
-                    if (!ed_Name.getText().toString().equals(name)&&name!=null) {
-                        TS("原名字错误");
-                    } else if (rb_name.isChecked()) {
-                        editor.putString("name", ed_pwd.getText().toString());
-                        editor.commit();
-                        TS("名字修改成功");
-                    } else if (rb_pwd.isChecked()) {
+                if (!isNull()) {
+                    if (createOrUpdata.equals("创建")) {
                         if (ed_pwd.getText().toString().equals(ed_pwd2.getText().toString())) {
-                            editor.putString("name", ed_Name.getText().toString());
-                            editor.putString("pwd", ed_pwd2.getText().toString());
+                            editor.putString(ed_Name.getText().toString(),
+                                    ed_pwd2.getText().toString());
                             editor.commit();
+                            TS("创建成功");
+                        } else {
+                            TS("两次密码不相同");
                         }
-                        TS("密码修改成功");
-                    } else {
-                        TS("密码不相同");
+                    } else if (createOrUpdata.equals("更改")) {
+                        if (pref.getString(ed_Name.getText().toString(), null).equals(ed_pwd.getText().toString())) {
+                            editor.putString(ed_Name.getText().toString(),
+                                    ed_pwd2.getText().toString());
+                            editor.commit();
+                            TS("修改成功");
+                        } else {
+                            TS("更新失败");
+                        }
                     }
-
+                } else {
+                    TS("数据不能为空");
                 }
             }
         });
@@ -164,41 +187,30 @@ public class WelComeActivity extends AppCompatActivity {
 
     private boolean isNull() {
         //选中的是修改密码
-        if (rb_pwd.isChecked()) {
-            if (ed_Name.getText().toString().isEmpty() ||
-                    ed_pwd.getText().toString().isEmpty()
-                    || ed_pwd2.getText().toString().isEmpty()) {
-                return true;
-            }
-            return false;
-        }
-        if (rb_name.isChecked()) {
-            if (ed_Name.getText().toString().isEmpty() ||
-                    ed_pwd.getText().toString().isEmpty()
-            ) {
-                return true;
-            }
-            return false;
+        if (ed_Name.getText().toString().isEmpty() ||
+                ed_pwd.getText().toString().isEmpty()
+                || ed_pwd2.getText().toString().isEmpty()) {
+            return true;
         }
         return false;
     }
 
-    private void rgChange(boolean isChangeName) {
-        if (isChangeName) {
-            tv_show_show.setText("请输入原用户名");
-            ed_Name.setHint("请输入原用户名");
-            tv_show_pwd.setText("请输入新用户名");
-            ed_pwd.setHint("请输入新用户名");
-            linear.setVisibility(View.GONE);
-        } else {
-            tv_show_show.setText("请输入用户名");
-            ed_Name.setHint("请输入用户名");
-            tv_show_pwd.setText("输入密码");
-            ed_pwd.setHint("输入密码");
-            linear.setVisibility(View.VISIBLE);
-        }
-
-    }
+//    private void rgChange(boolean isChangeName) {
+//        if (isChangeName) {
+//            tv_show_show.setText("请输入原用户名");
+//            ed_Name.setHint("请输入原用户名");
+//            tv_show_pwd.setText("请输入新用户名");
+//            ed_pwd.setHint("请输入新用户名");
+//            linear.setVisibility(View.GONE);
+//        } else {
+//            tv_show_show.setText("请输入用户名");
+//            ed_Name.setHint("请输入用户名");
+//            tv_show_pwd.setText("输入密码");
+//            ed_pwd.setHint("输入密码");
+//            linear.setVisibility(View.VISIBLE);
+//        }
+//
+//    }
 
     //edittext监听
     private void editLister() {
@@ -228,7 +240,7 @@ public class WelComeActivity extends AppCompatActivity {
         }
     }
 
-
+    //返回从图库获取的图片信息
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);

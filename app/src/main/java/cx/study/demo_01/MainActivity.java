@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Paint;
 import android.os.Bundle;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
@@ -15,6 +16,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -33,11 +35,12 @@ public class MainActivity extends AppCompatActivity {
     还有选择框的选中事件  所以就定义四个控件
      */
     private Button btn_send;
-    private Button btn_registered;
     private EditText ed_name;
     private EditText ed_pwd;
     private CheckBox cbx_show;
     private CheckBox cbx_save;
+    private TextView tv_newUser;
+    private TextView tv_lostUser;
 
     private SharedPreferences pref;
     private SharedPreferences.Editor editor;
@@ -62,14 +65,29 @@ public class MainActivity extends AppCompatActivity {
      * 功能实现
      */
     private void initEven() {
+        //设置下划线
+        tv_newUser.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG | Paint.ANTI_ALIAS_FLAG);
+        tv_lostUser.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG | Paint.ANTI_ALIAS_FLAG);
 
-        //会自动生成  这是一个抽象方法的实现
-        btn_send.setOnClickListener(new View.OnClickListener() {
+        tv_newUser.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //这里边就是写 点击需要出发的功能
+                Intent intent = new Intent(MainActivity.this, WelComeActivity.class);
+                intent.putExtra("data", "创建");
+                startActivity(intent);
             }
         });
+        tv_lostUser.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, WelComeActivity.class);
+                intent.putExtra("data", "更改");
+                startActivity(intent);
+            }
+        });
+
+
+        //会自动生成  这是一个抽象方法的实现
         //这个也就是控件的点击事件  大部分控件都有  onClick就是点击的意思
         //按钮的点击事件
         btn_send.setOnClickListener(new View.OnClickListener() {
@@ -79,13 +97,13 @@ public class MainActivity extends AppCompatActivity {
                 if (!ed_name.getText().toString().isEmpty() ||
                         !ed_pwd.getText().toString().isEmpty()) {
 
-                    if (pref.getString("name", null) == null){
+                    if (pref.getString(ed_name.getText().toString(), null) == null) {
                         TS("没有数据,请注册");
                         return;
                     }
 
                     //判断用户名密码
-                    if (ed_name.getText().toString().equals(pref.getString("name", null)) && ed_pwd.getText().toString().equals(pref.getString("pwd", null))) {
+                    if (ed_pwd.getText().toString().equals(pref.getString(ed_name.getText().toString(), null))) {
                         //intent 就是用来跳转用的。 构造方法第一个写这个activity  第二个参数写跳转到哪个activity
                         Intent intent = new Intent(MainActivity.this, RegisteredActivity.class);
                         startActivity(intent);
@@ -119,8 +137,8 @@ public class MainActivity extends AppCompatActivity {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
                     editor.putBoolean("isSave", true);
-                    editor.putString("name", ed_name.getText().toString());
-                    editor.putString("pwd", ed_pwd.getText().toString());
+                    editor.putString("saveName", ed_name.getText().toString());
+                    editor.putString("savePwd", ed_pwd.getText().toString());
                     editor.commit();
                 } else {
                     editor.clear();
@@ -129,13 +147,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
-        btn_registered.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, WelComeActivity.class);
-                startActivity(intent);
-            }
-        });
+
 
     }
 
@@ -148,8 +160,9 @@ public class MainActivity extends AppCompatActivity {
      */
     @SuppressLint("CommitPrefEdits")
     private void initView() {
+        tv_newUser = findViewById(R.id.tv_newUser);
+        tv_lostUser = findViewById(R.id.tv_lostUser);
         btn_send = findViewById(R.id.btn_send);
-        btn_registered = findViewById(R.id.btn_registered);
         ed_name = findViewById(R.id.ed_Name);
         ed_pwd = findViewById(R.id.ed_Pwd);
         cbx_show = findViewById(R.id.cbx_show);
@@ -165,8 +178,8 @@ public class MainActivity extends AppCompatActivity {
         boolean isSave = pref.getBoolean("isSave", false);
         if (isSave) {
             cbx_save.setChecked(true);
-            ed_name.setText(pref.getString("name", null));
-            ed_pwd.setText(pref.getString("pwd", null));
+            ed_name.setText(pref.getString("saveName", null));
+            ed_pwd.setText(pref.getString("savePwd", null));
             changeImage();
         }
     }
