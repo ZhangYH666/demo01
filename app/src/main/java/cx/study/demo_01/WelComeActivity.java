@@ -10,9 +10,9 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.provider.MediaStore;
-import android.text.method.HideReturnsTransformationMethod;
-import android.text.method.PasswordTransformationMethod;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -163,7 +163,8 @@ public class WelComeActivity extends AppCompatActivity {
                             editor.putString(ed_Name.getText().toString(),
                                     ed_pwd2.getText().toString());
                             editor.commit();
-                            TS("创建成功");
+                            TS("创建成功,2秒后跳转");
+                            intentTimeOf3();
                         } else {
                             TS("两次密码不相同");
                         }
@@ -172,7 +173,8 @@ public class WelComeActivity extends AppCompatActivity {
                             editor.putString(ed_Name.getText().toString(),
                                     ed_pwd2.getText().toString());
                             editor.commit();
-                            TS("修改成功");
+                            TS("修改成功,2秒后跳转");
+                            intentTimeOf3();
                         } else {
                             TS("更新失败");
                         }
@@ -183,6 +185,18 @@ public class WelComeActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    //延时跳转
+    private void intentTimeOf3() {
+        new Handler(new Handler.Callback() {
+            @Override
+            public boolean handleMessage(Message msg) {
+                startActivity(new Intent(WelComeActivity.this, MainActivity.class));
+                finish();
+                return false;
+            }
+        }).sendEmptyMessageDelayed(0, 2000);
     }
 
     private boolean isNull() {

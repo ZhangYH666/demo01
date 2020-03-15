@@ -104,9 +104,21 @@ public class MainActivity extends AppCompatActivity {
 
                     //判断用户名密码
                     if (ed_pwd.getText().toString().equals(pref.getString(ed_name.getText().toString(), null))) {
+                        if (cbx_save.isChecked()) {
+                            editor.putBoolean("isSave", true);
+                            editor.putString("saveName", ed_name.getText().toString());
+                            editor.putString("savePwd", ed_pwd.getText().toString());
+                            editor.commit();
+                        } else {
+                            editor.clear();
+                            editor.putBoolean("isSave", false);
+                            editor.commit();
+                        }
+
                         //intent 就是用来跳转用的。 构造方法第一个写这个activity  第二个参数写跳转到哪个activity
                         Intent intent = new Intent(MainActivity.this, RegisteredActivity.class);
                         startActivity(intent);
+                        finish();
                     } else {
                         TS("用户名密码错误");
                     }
@@ -130,21 +142,6 @@ public class MainActivity extends AppCompatActivity {
                     ed_pwd.setTransformationMethod(PasswordTransformationMethod.getInstance());
                 }
                 CancelFocus();
-            }
-        });
-        cbx_save.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    editor.putBoolean("isSave", true);
-                    editor.putString("saveName", ed_name.getText().toString());
-                    editor.putString("savePwd", ed_pwd.getText().toString());
-                    editor.commit();
-                } else {
-                    editor.clear();
-                    editor.putBoolean("isSave", false);
-                    editor.commit();
-                }
             }
         });
 
