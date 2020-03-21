@@ -8,19 +8,19 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Paint;
 import android.os.Bundle;
-import android.text.method.HideReturnsTransformationMethod;
-import android.text.method.PasswordTransformationMethod;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
-import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import cx.study.demo_01.SqLite.SQLDate;
+import cx.study.demo_01.SqLite.SqliteDataHelper;
+import cx.study.demo_01.SqLite.User_Data;
+import cx.study.demo_01.Tool.EditTextDemo.ClearEditText;
+import cx.study.demo_01.Tool.TextChange;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 import static cx.study.demo_01.Tool.UseTool.changPic;
@@ -35,17 +35,18 @@ public class MainActivity extends AppCompatActivity {
     还有选择框的选中事件  所以就定义四个控件
      */
     private Button btn_send;
-    private EditText ed_name;
-    private EditText ed_pwd;
-    private CheckBox cbx_show;
-    private CheckBox cbx_save;
+    private ClearEditText ed_name;
+    private ClearEditText ed_pwd;
     private TextView tv_newUser;
     private TextView tv_lostUser;
-
     private SharedPreferences pref;
     private SharedPreferences.Editor editor;
-
     private CircleImageView circleImageView;
+    private String path;
+    //数据库
+    private SqliteDataHelper sqliteDataHelper;
+    private User_Data user_data;
+    private SQLDate sqlDate;
 
 
     //这个是onCreate事件 Activity初始化的时候会运行这个
@@ -61,10 +62,19 @@ public class MainActivity extends AppCompatActivity {
         initEven();
     }
 
+
     /**
      * 功能实现
      */
     private void initEven() {
+        changeImage();
+
+
+        //EditText 输入后事件
+        TextChange ed_name_change = new TextChange("登录", ed_name, MainActivity.this);
+        ed_name.addTextChangedListener(ed_name_change);
+
+
         //设置下划线
         tv_newUser.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG | Paint.ANTI_ALIAS_FLAG);
         tv_lostUser.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG | Paint.ANTI_ALIAS_FLAG);
@@ -97,56 +107,46 @@ public class MainActivity extends AppCompatActivity {
                 if (!ed_name.getText().toString().isEmpty() ||
                         !ed_pwd.getText().toString().isEmpty()) {
 
-                    if (pref.getString(ed_name.getText().toString(), null) == null) {
+                    if (!sqlDate.query_Name(ed_name.getText().toString())) {
                         TS("没有数据,请注册");
+                        ed_name.startShakeAnimation();
                         return;
                     }
 
                     //判断用户名密码
-                    if (ed_pwd.getText().toString().equals(pref.getString(ed_name.getText().toString(), null))) {
-                        if (cbx_save.isChecked()) {
-                            editor.putBoolean("isSave", true);
-                            editor.putString("saveName", ed_name.getText().toString());
-                            editor.putString("savePwd", ed_pwd.getText().toString());
-                            editor.commit();
-                        } else {
-                            editor.clear();
-                            editor.putBoolean("isSave", false);
-                            editor.commit();
-                        }
-
+                    if (isCorrect(ed_name.getText().toString(), ed_pwd.getText().toString())) {
+                        editor.putString("saveName", ed_name.getText().toString());
+                        editor.putString("savePwd", ed_pwd.getText().toString());
+                        editor.commit();
                         //intent 就是用来跳转用的。 构造方法第一个写这个activity  第二个参数写跳转到哪个activity
                         Intent intent = new Intent(MainActivity.this, RegisteredActivity.class);
                         startActivity(intent);
                         finish();
                     } else {
                         TS("用户名密码错误");
+                        ed_pwd.startShakeAnimation();
                     }
                 } else {
                     //这两个就是提示
                     TS("用户名密码不能为空！！！");
+                    ed_name.startShakeAnimation();
+                    ed_pwd.startShakeAnimation();
                 }
                 //取消光标
                 CancelFocus();
             }
         });
-        //复选框的选中事件
-        //选中事件  button 是 click  这个是checked   专业术语叫监听器
-        cbx_show.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override                                           //这个参数就是多选框的状态 会在这里呈现
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    //这个就是固定语句   英语开头能看懂就行  记住就行了
-                    ed_pwd.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
-                } else {
-                    ed_pwd.setTransformationMethod(PasswordTransformationMethod.getInstance());
-                }
-                CancelFocus();
-            }
-        });
-
-
     }
+
+
+    //判断用户名和密码是否正确
+    public boolean isCorrect(String name, String pwd) {
+        user_data = new User_Data();
+        user_data.setName(name);
+        user_data.setPwd(pwd);
+        return sqlDate.query_login(user_data);
+    }
+
 
     /**
      * 控件实例化
@@ -162,32 +162,32 @@ public class MainActivity extends AppCompatActivity {
         btn_send = findViewById(R.id.btn_send);
         ed_name = findViewById(R.id.ed_Name);
         ed_pwd = findViewById(R.id.ed_Pwd);
-        cbx_show = findViewById(R.id.cbx_show);
-        cbx_save = findViewById(R.id.cbx_save);
         circleImageView = findViewById(R.id.img_tx);
         //创建一个对象
         pref = getSharedPreferences("data", Context.MODE_PRIVATE);
         //实例化
         editor = pref.edit();
-        //读取数据
+        //自动补充之前登陆的账号和密码
+        ed_name.setText(pref.getString("saveName", null));
+        ed_pwd.setText(pref.getString("savePwd", null));
+
+        // 数据库实例化
+        sqliteDataHelper = new SqliteDataHelper(MainActivity.this);
+        sqlDate = new SQLDate(MainActivity.this);
 
 
-        boolean isSave = pref.getBoolean("isSave", false);
-        if (isSave) {
-            cbx_save.setChecked(true);
-            ed_name.setText(pref.getString("saveName", null));
-            ed_pwd.setText(pref.getString("savePwd", null));
-            changeImage();
-        }
     }
 
-    private void changeImage() {
-        String path = pref.getString("path", null);
+    //图片旋转
+    public void changeImage() {
+        path = sqlDate.query_Path(ed_name.getText().toString());
         if (path != null) {
-            Bitmap bitmap = BitmapFactory.decodeFile(pref.getString("path", null));
+            Bitmap bitmap = BitmapFactory.decodeFile(path);
             //旋转图片
             bitmap = changPic(bitmap, path);
             circleImageView.setImageBitmap(bitmap);
+        } else {
+            circleImageView.setImageResource(R.drawable.beijing02);
         }
     }
 
@@ -212,6 +212,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onRestart() {
         super.onRestart();
-        changeImage();
+
     }
 }

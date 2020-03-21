@@ -16,8 +16,9 @@
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/img_tx"
         android:layout_width="130dp"
-        android:layout_height="130dp"
+        android:layout_height="141dp"
         android:layout_gravity="center"
+        android:enabled="false"
         android:layout_marginTop="66dp"
         android:src="@drawable/beijing02" />
 
@@ -42,22 +43,21 @@
             android:layout_marginRight="50dp"
             android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/tv_show_name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="请输入用户名"
-                android:textColor="#80000000"
-                android:visibility="invisible" />
-
-            <EditText
-                android:id="@+id/ed_Name_change"
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/til_Zh"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="请输入用户名"
-                android:importantForAutofill="no"
-                android:textSize="20sp"
-                tools:ignore="HardcodedText,TextFields" />
+                android:hint="请输入账号"
+                android:orientation="vertical">
+
+                <cx.study.demo_01.Tool.EditTextDemo.ClearEditText
+                    android:id="@+id/ed_Name_change"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:importantForAutofill="no"
+                    android:textSize="20sp"
+                    tools:ignore="HardcodedText,TextFields" />
+            </com.google.android.material.textfield.TextInputLayout>
         </LinearLayout>
 
         <LinearLayout
@@ -67,23 +67,24 @@
             android:layout_marginRight="50dp"
             android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/tv_show_pwd"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="输入密码"
-                android:textColor="#80000000"
-                android:visibility="invisible" />
-
-            <EditText
-                android:id="@+id/ed_Pwd"
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/til_pwd1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="输入密码"
-                android:importantForAutofill="no"
-                android:inputType="textPassword"
-                android:textSize="20sp"
-                tools:ignore="HardcodedText,TextFields" />
+                app:counterEnabled="true"
+                app:counterMaxLength="6"
+                app:errorEnabled="true">
+
+                <cx.study.demo_01.Tool.EditTextDemo.PasswordEditText
+                    android:id="@+id/ed_Pwd"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:importantForAutofill="no"
+                    android:inputType="textPassword"
+                    android:textSize="20sp"
+                    tools:ignore="HardcodedText,TextFields" />
+            </com.google.android.material.textfield.TextInputLayout>
         </LinearLayout>
 
 
@@ -95,24 +96,26 @@
             android:layout_marginRight="50dp"
             android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/tv_show_pwd2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="确认密码"
-                android:textColor="#80000000"
-                android:visibility="invisible" />
-
-            <EditText
-                android:id="@+id/ed_Pwd2"
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/til_pwd2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="确认密码"
-                android:importantForAutofill="no"
-                android:inputType="textPassword"
-                android:textSize="20sp"
-                tools:ignore="HardcodedText,TextFields" />
+                app:counterEnabled="true"
+                app:counterMaxLength="6"
+                app:errorEnabled="true">
+
+                <cx.study.demo_01.Tool.EditTextDemo.PasswordEditText
+                    android:id="@+id/ed_Pwd2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:importantForAutofill="no"
+                    android:inputType="textPassword"
+                    android:textSize="20sp"
+                    tools:ignore="HardcodedText,TextFields" />
+            </com.google.android.material.textfield.TextInputLayout>
         </LinearLayout>
+
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -133,6 +136,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:checked="true"
                     android:text="不修改头像" />
 
                 <RadioButton
@@ -140,7 +144,6 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:checked="true"
                     android:text="修改头像" />
 
             </RadioGroup>

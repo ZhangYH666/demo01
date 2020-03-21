@@ -6,10 +6,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/beijing"
-
     android:focusable="true"
     android:focusableInTouchMode="true"
-
     tools:context=".MainActivity">
 
     <!--  取消焦点  -->
@@ -23,75 +21,70 @@
         android:layout_marginTop="66dp"
         android:src="@drawable/beijing02" />
 
-
-    <EditText
-        android:id="@+id/ed_Name"
+    <LinearLayout
+        android:id="@+id/liner_ed"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/img_tx"
         android:layout_centerHorizontal="true"
-        android:layout_marginLeft="50dp"
         android:layout_marginTop="50dp"
         android:layout_marginRight="50dp"
-        android:hint="请输入用户名"
-        android:importantForAutofill="no"
-        android:textSize="20sp"
-        tools:ignore="HardcodedText,TextFields" />
+        android:orientation="vertical">
 
-    <EditText
-        android:id="@+id/ed_Pwd"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/ed_Name"
-        android:layout_centerHorizontal="true"
-        android:layout_marginLeft="50dp"
-        android:layout_marginTop="40dp"
-        android:layout_marginRight="50dp"
-        android:hint="请输入密码"
-        android:importantForAutofill="no"
-        android:inputType="textPassword"
-        android:textSize="20sp"
-        tools:ignore="HardcodedText,TextFields" />
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="请输入用户名">
 
-    <CheckBox
-        android:id="@+id/cbx_show"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/ed_Pwd"
-        android:layout_alignStart="@id/ed_Pwd"
-        android:layout_marginTop="10dp"
-        android:text="显示密码"
-        tools:ignore="HardcodedText" />
+            <cx.study.demo_01.Tool.EditTextDemo.ClearEditText
+                android:id="@+id/ed_Name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:importantForAutofill="no"
+                android:textSize="20sp"
+                tools:ignore="HardcodedText,TextFields" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:hint="请输入密码"
+            app:counterEnabled="true"
+            app:counterMaxLength="6"
+            app:errorEnabled="true">
+
+            <cx.study.demo_01.Tool.EditTextDemo.PasswordEditText
+                android:id="@+id/ed_Pwd"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:importantForAutofill="no"
+                android:inputType="textPassword"
+                android:textSize="20sp"
+                tools:ignore="HardcodedText,TextFields" />
+        </com.google.android.material.textfield.TextInputLayout>
+    </LinearLayout>
+
 
     <TextView
         android:id="@+id/tv_newUser"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/cbx_show"
-        android:layout_alignStart="@id/cbx_show"
-        android:layout_marginTop="5dp"
+        android:layout_below="@+id/liner_ed"
+        android:layout_alignLeft="@+id/liner_ed"
+        android:layout_marginTop="10dp"
         android:text="新用户"
         android:textColor="#C4027180"
         android:textSize="16dp" />
 
-    <CheckBox
-        android:id="@+id/cbx_save"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/ed_Pwd"
-        android:layout_alignEnd="@id/ed_Pwd"
-        android:layout_centerVertical="true"
-        android:layout_marginTop="10dp"
-        android:text="记住密码"
-        tools:ignore="HardcodedText" />
 
     <TextView
         android:id="@+id/tv_lostUser"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/cbx_save"
-        android:layout_alignStart="@id/cbx_save"
-        android:layout_marginTop="5dp"
+        android:layout_below="@+id/liner_ed"
+        android:layout_alignRight="@id/liner_ed"
+        android:layout_marginTop="10dp"
         android:text="忘记密码"
         android:textColor="#9C9C9C"
         android:textSize="16dp" />
@@ -101,7 +94,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/cbx_show"
+        android:layout_below="@+id/liner_ed"
         android:layout_marginLeft="50dp"
         android:layout_marginTop="40dp"
         android:layout_marginRight="50dp"

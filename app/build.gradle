@@ -41,4 +41,8 @@ dependencies {
     implementation 'com.rengwuxian.materialedittext:library:2.1.4'
     //剪切图片
     implementation 'com.github.yalantis:ucrop:2.2.3'
+
+    //TextInputLayout
+    implementation 'com.android.support:appcompat-v7:28.0.0'
+    implementation 'com.android.support:design:28.0.0'
 }
